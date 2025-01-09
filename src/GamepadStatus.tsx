@@ -18,7 +18,7 @@ const GamepadStatus: React.FC = () => {
           <p>Start: {gamepadInfo.start ? 'Pressed' : 'Not Pressed'}</p>
           <p>Select: {gamepadInfo.select ? 'Pressed' : 'Not Pressed'}</p>
           <h2>Joysticks</h2>
-          <p>Left Joystick: X = {gamepadInfo.joystick[0]}, Y = {gamepadInfo.joystick[1]}</p>
+          <p>Left Joystick: {gamepadInfo.joystick}</p>
           <p>Right Joystick: X = {gamepadInfo.joystickRight[0]}, Y = {gamepadInfo.joystickRight[1]}</p>
           <h2>D-Pad</h2>
           <p>Up: {gamepadInfo.up ? 'Pressed' : 'Not Pressed'}</p>
