@@ -9,13 +9,9 @@ const Focus: React.FC<{ action: () => void, autoFocus: boolean, children: React.
   const [playEnter] = useSound(enterSound);
   const { ref, focusSelf, focused } = useFocusable({
     onEnterRelease: () => {
-      action()
       playEnter()
+      action()
     },
-    // onArrowPress: (direction, props, details) => {
-    //   playNavigation()
-    //   return true
-    // },
     onFocus: () => {
       playNavigation()
     }

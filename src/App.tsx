@@ -4,14 +4,13 @@ import {
   init,
   FocusContext,
   navigateByDirection,
+  setKeyMap,
 } from '@noriginmedia/norigin-spatial-navigation';
 import { useGamepad } from "./useGamepad";
 import toast from 'react-hot-toast'
 import Focus from "./Focus";
-// import useSound from "use-sound";
-// import uiSound from "/sounds/deck_ui_navigation.mp3"
 
-const notify = () => toast("Something has happened!");
+const notify = () => toast("Something was selected!");
 
 // Initialize Spatial Navigation
 init({
@@ -54,51 +53,64 @@ const ButtonList: React.FC = () => {
 };
 
 const App: React.FC = () => {
-  // const [play] = useSound(uiSound);
 
   const gamepadInfo = useGamepad();
+
+  // setKeyMap({
+  //   enter: [13]
+  // })
 
   useEffect(() => {
     if (gamepadInfo.connected) {
       switch (gamepadInfo.joystick) {
         case "up":
           navigateByDirection("up", {});
-          // play()
           break;
         case "down":
           navigateByDirection("down", {})
-          // play()
           break;
         case "right":
           navigateByDirection("right", {})
-          // play()
           break;
         case "left":
           navigateByDirection("left", {})
-          // play()
           break;
         default:
           break;
       }
       if (gamepadInfo.up) {
         navigateByDirection("up", {})
-        // play()
       }
       if (gamepadInfo.down) {
         navigateByDirection("down", {})
-        // play()
       }
       if (gamepadInfo.left) {
         navigateByDirection("left", {})
-        // play()
       }
       if (gamepadInfo.right) {
         navigateByDirection("right", {})
-        // play()
       }
 
     }
   }, [gamepadInfo])
+
+  useEffect(() => {
+    const sendEnterKey = () => {
+      const event = new KeyboardEvent('keydown', {
+        key: 'Enter',
+        code: 'Enter',
+        keyCode: 13, // For older browsers
+        which: 13, // For older browsers
+        bubbles: true, // Ensure the event bubbles up
+        cancelable: true, // Allow event cancellation
+      });
+      document.dispatchEvent(event); // Dispatch the event
+    };
+
+    if (gamepadInfo.buttonA) {
+      sendEnterKey(); // Trigger Enter key when the A button is pressed
+    }
+  }, [gamepadInfo.buttonA]); // Watch for changes to the A button state
 
 
   return (
