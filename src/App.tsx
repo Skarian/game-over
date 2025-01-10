@@ -95,25 +95,6 @@ const App: React.FC = () => {
     }
   }, [gamepadInfo])
 
-  useEffect(() => {
-    const sendEnterKey = () => {
-      const event = new KeyboardEvent('keydown', {
-        key: 'Enter',
-        code: 'Enter',
-        keyCode: 13, // For older browsers
-        which: 13, // For older browsers
-        bubbles: true, // Ensure the event bubbles up
-        cancelable: true, // Allow event cancellation
-      });
-      document.dispatchEvent(event); // Dispatch the event
-    };
-
-    if (gamepadInfo.buttonA) {
-      sendEnterKey(); // Trigger Enter key when the A button is pressed
-    }
-  }, [gamepadInfo.buttonA]); // Watch for changes to the A button state
-
-
   return (
     <FocusContext.Provider value="MAIN">
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
