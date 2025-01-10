@@ -8,60 +8,46 @@ import {
   navigateByDirection,
 } from '@noriginmedia/norigin-spatial-navigation';
 import { useGamepad } from "./useGamepad";
+import toast from 'react-hot-toast'
+import Focus from "./Focus";
+import useSound from "use-sound";
+import uiSound from "/sounds/deck_ui_navigation.mp3"
+
+const notify = () => toast("Something has happened!");
 
 // Initialize Spatial Navigation
 init({
-  debug: true, // Enables console debugging
+  debug: false, // Enables console debugging
   visualDebug: false, // Enables visual focus debugging
-  // distanceCalculationMethod: 'center', // Optional: Can be 'corners' (default) or 'edges'
 });
 
-// Set custom key mapping for gamepad
-// setKeyMap({
-//   up: [12], // D-pad Up
-//   down: [13], // D-pad Down
-//   left: [14], // D-pad Left
-//   right: [15], // D-pad Right
-//   enter: [0], // A button for activation
-// });
-
-const Button: React.FC<{ label: string; onClick: () => void, autoFocus?: boolean }> = ({ label, onClick, autoFocus }) => {
-  const { ref, focused, focusSelf } = useFocusable();
-
-  useEffect(() => {
-    if (autoFocus) {
-      focusSelf()
-    }
-  }, [autoFocus, focusSelf])
-
+const Button: React.FC<{ label: string; onClick: () => void, autoFocus: boolean }> = ({ label, onClick, autoFocus }) => {
   return (
-    <div
-      ref={ref}
-      className={`px-6 py-3 rounded cursor-pointer ${focused ? 'bg-blue-600 text-white' : 'bg-gray-300 text-black'
-        }`}
-      onClick={onClick}
-    >
+    <Focus autoFocus={autoFocus} className="px-6 py-3 rounded" focusedStyle="ring-offset-2 ring-2 bg-blue-400 text-white" unFocusedStyle="bg-gray-400 text-black" action={onClick} >
       {label}
-    </div>
+    </Focus>
   );
 };
 
 const ButtonList: React.FC = () => {
   const { ref, focusKey } = useFocusable();
   const buttons = [
-    { label: 'Button 1', action: () => console.log('Button 1 clicked') },
-    { label: 'Button 2', action: () => console.log('Button 2 clicked') },
-    { label: 'Button 3', action: () => console.log('Button 3 clicked') },
-    { label: 'Button 4', action: () => console.log('Button 4 clicked') },
-    { label: 'Button 5', action: () => console.log('Button 1 clicked') },
-    { label: 'Button 6', action: () => console.log('Button 2 clicked') },
-    { label: 'Button 7', action: () => console.log('Button 3 clicked') },
-    { label: 'Button 8', action: () => console.log('Button 4 clicked') },
-    { label: 'Button 9', action: () => console.log('Button 1 clicked') },
-    { label: 'Button 10', action: () => console.log('Button 2 clicked') },
-    { label: 'Button 11', action: () => console.log('Button 3 clicked') },
-    { label: 'Button 12', action: () => console.log('Button 4 clicked') },
+    { label: 'Button 1', action: notify },
+    { label: 'Button 2', action: notify },
+    { label: 'Button 3', action: notify },
+    { label: 'Button 4', action: notify },
+    { label: 'Button 5', action: notify },
+    { label: 'Button 6', action: notify },
+    { label: 'Button 7', action: notify },
+    { label: 'Button 8', action: notify },
+    { label: 'Button 9', action: notify },
+    { label: 'Button 10', action: notify },
+    { label: 'Button 11', action: notify },
+    { label: 'Button 12', action: notify },
   ];
+
+  // let audio = new Audio("/sounds/deck_ui_navigation.wav")
+  const [play] = useSound(uiSound);
 
   const gamepadInfo = useGamepad();
 
@@ -70,40 +56,70 @@ const ButtonList: React.FC = () => {
       switch (gamepadInfo.joystick) {
         case "up":
           navigateByDirection("up", {});
+          play()
+          console.log("Playing audio!")
           break;
         case "down":
           navigateByDirection("down", {})
+          play()
+          console.log("Playing audio!")
           break;
         case "right":
           navigateByDirection("right", {})
+          play()
+          console.log("Playing audio!")
           break;
         case "left":
           navigateByDirection("left", {})
+          play()
+          console.log("Playing audio!")
           break;
         default:
           break;
       }
       if (gamepadInfo.up) {
         navigateByDirection("up", {})
+        play()
+        console.log("Playing audio!")
       }
       if (gamepadInfo.down) {
         navigateByDirection("down", {})
+        play()
+        console.log("Playing audio!")
       }
       if (gamepadInfo.left) {
         navigateByDirection("left", {})
+        play()
+        console.log("Playing audio!")
       }
       if (gamepadInfo.right) {
         navigateByDirection("right", {})
+        play()
+        console.log("Playing audio!")
       }
 
     }
   }, [gamepadInfo])
 
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent): void => {
+      if (["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(event.key)) {
+        // audio.currentTime = 0; // Reset playback to the beginning
+        // audio.play().catch(() => {
+        //   console.error("Audio playback failed. Fix your file or permissions.");
+        // });
+        play()
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, []);
 
   return (
     <FocusContext.Provider value={focusKey}>
       <div ref={ref} className="">
-        <div className="flex space-x-2 space-y-2 flex-wrap ">
+        <div className="flex space-x-2 flex-wrap ">
 
           {buttons.map((button, index) => (
             <Button key={index} label={button.label} onClick={button.action} autoFocus={index === 0} />
