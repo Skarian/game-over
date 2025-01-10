@@ -1,52 +1,85 @@
 import "./App.css";
-import React, { useState, useEffect } from 'react';
-import { useGamepad } from './useGamepad'; // Adjust the import path based on your file structure
+import React, { useEffect } from 'react';
+import {
+  init,
+  setKeyMap,
+  useFocusable,
+  FocusContext,
+} from '@noriginmedia/norigin-spatial-navigation';
 
-const App: React.FC = () => {
-  const [focusedIndex, setFocusedIndex] = useState(0); // Index of the currently focused button
-  const buttons = ['Home', 'Gamepad Status', 'About'];
-  const gamepadInfo = useGamepad();
+// Initialize Spatial Navigation
+init({
+  debug: true, // Enables console debugging
+  visualDebug: true, // Enables visual focus debugging
+  // distanceCalculationMethod: 'center', // Optional: Can be 'corners' (default) or 'edges'
+});
+
+// Set custom key mapping for gamepad
+setKeyMap({
+  up: [12], // D-pad Up
+  down: [13], // D-pad Down
+  left: [14], // D-pad Left
+  right: [15], // D-pad Right
+  enter: [0], // A button for activation
+});
+
+const Button: React.FC<{ label: string; onClick: () => void, autoFocus?: boolean }> = ({ label, onClick, autoFocus }) => {
+  const { ref, focused, focusSelf } = useFocusable();
 
   useEffect(() => {
-    if (!gamepadInfo.connected) return;
-
-    // Update focus based on joystick input
-    if (gamepadInfo.joystick === 'up') {
-      setFocusedIndex((prev) => (prev - 1 + buttons.length) % buttons.length);
-    } else if (gamepadInfo.joystick === 'down') {
-      setFocusedIndex((prev) => (prev + 1) % buttons.length);
+    if (autoFocus) {
+      focusSelf()
     }
-
-    // Trigger action when "A" button is pressed
-    if (gamepadInfo.buttonA) {
-      handleButtonClick(focusedIndex);
-    }
-  }, [gamepadInfo.joystick, gamepadInfo.buttonA]);
-
-  const handleButtonClick = (index: number) => {
-    console.log(`Button "${buttons[index]}" clicked!`);
-    // Handle the action here (e.g., navigate to a page)
-  };
+  }, [autoFocus, focusSelf])
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center justify-center">
-      <div className="p-6 bg-white shadow rounded">
-        <h1 className="text-2xl font-bold mb-6">Gamepad Navigation</h1>
-        <div className="flex flex-col space-y-4">
-          {buttons.map((button, index) => (
-            <button
-              key={button}
-              className={`px-6 py-3 rounded ${index === focusedIndex
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-                }`}
-            >
-              {button}
-            </button>
-          ))}
-        </div>
-      </div>
+    <div
+      ref={ref}
+      className={`px-6 py-3 rounded cursor-pointer ${focused ? 'bg-blue-600 text-white' : 'bg-gray-300 text-black'
+        }`}
+      onClick={onClick}
+    >
+      {label}
     </div>
+  );
+};
+
+const ButtonList: React.FC = () => {
+  const { ref, focusKey } = useFocusable();
+  const buttons = [
+    { label: 'Button 1', action: () => console.log('Button 1 clicked') },
+    { label: 'Button 2', action: () => console.log('Button 2 clicked') },
+    { label: 'Button 3', action: () => console.log('Button 3 clicked') },
+    { label: 'Button 4', action: () => console.log('Button 4 clicked') },
+    { label: 'Button 5', action: () => console.log('Button 1 clicked') },
+    { label: 'Button 6', action: () => console.log('Button 2 clicked') },
+    { label: 'Button 7', action: () => console.log('Button 3 clicked') },
+    { label: 'Button 8', action: () => console.log('Button 4 clicked') },
+    { label: 'Button 9', action: () => console.log('Button 1 clicked') },
+    { label: 'Button 10', action: () => console.log('Button 2 clicked') },
+    { label: 'Button 11', action: () => console.log('Button 3 clicked') },
+    { label: 'Button 12', action: () => console.log('Button 4 clicked') },
+  ];
+
+  return (
+    <FocusContext.Provider value={focusKey}>
+      <div ref={ref} className="flex flex-wrap space-x-9 space-y-5 p-3">
+        {buttons.map((button, index) => (
+          <Button key={index} label={button.label} onClick={button.action} autoFocus={index === 0} />
+        ))}
+      </div>
+    </FocusContext.Provider>
+  );
+};
+
+const App: React.FC = () => {
+  return (
+    <FocusContext.Provider value="MAIN">
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
+        <h1 className="text-2xl font-bold mb-6">Gamepad Navigation Example</h1>
+        <ButtonList />
+      </div>
+    </FocusContext.Provider>
   );
 };
 
