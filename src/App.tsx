@@ -5,23 +5,25 @@ import {
   setKeyMap,
   useFocusable,
   FocusContext,
+  navigateByDirection,
 } from '@noriginmedia/norigin-spatial-navigation';
+import { useGamepad } from "./useGamepad";
 
 // Initialize Spatial Navigation
 init({
   debug: true, // Enables console debugging
-  visualDebug: true, // Enables visual focus debugging
+  visualDebug: false, // Enables visual focus debugging
   // distanceCalculationMethod: 'center', // Optional: Can be 'corners' (default) or 'edges'
 });
 
 // Set custom key mapping for gamepad
-setKeyMap({
-  up: [12], // D-pad Up
-  down: [13], // D-pad Down
-  left: [14], // D-pad Left
-  right: [15], // D-pad Right
-  enter: [0], // A button for activation
-});
+// setKeyMap({
+//   up: [12], // D-pad Up
+//   down: [13], // D-pad Down
+//   left: [14], // D-pad Left
+//   right: [15], // D-pad Right
+//   enter: [0], // A button for activation
+// });
 
 const Button: React.FC<{ label: string; onClick: () => void, autoFocus?: boolean }> = ({ label, onClick, autoFocus }) => {
   const { ref, focused, focusSelf } = useFocusable();
@@ -61,18 +63,46 @@ const ButtonList: React.FC = () => {
     { label: 'Button 12', action: () => console.log('Button 4 clicked') },
   ];
 
+  const gamepadInfo = useGamepad();
+
+  useEffect(() => {
+    if (gamepadInfo.connected) {
+      switch (gamepadInfo.joystick) {
+        case "up":
+          navigateByDirection("up", {});
+          break;
+        case "down":
+          navigateByDirection("down", {})
+          break;
+        case "right":
+          navigateByDirection("right", {})
+          break;
+        case "left":
+          navigateByDirection("left", {})
+          break;
+        default:
+          break;
+      }
+    }
+  }, [gamepadInfo])
+
+
   return (
     <FocusContext.Provider value={focusKey}>
-      <div ref={ref} className="flex flex-wrap space-x-9 space-y-5 p-3">
-        {buttons.map((button, index) => (
-          <Button key={index} label={button.label} onClick={button.action} autoFocus={index === 0} />
-        ))}
+      <div ref={ref} className="">
+        <div className="flex space-x-2 space-y-2 flex-wrap ">
+
+          {buttons.map((button, index) => (
+            <Button key={index} label={button.label} onClick={button.action} autoFocus={index === 0} />
+          ))}
+        </div>
       </div>
     </FocusContext.Provider>
   );
 };
 
 const App: React.FC = () => {
+
   return (
     <FocusContext.Provider value="MAIN">
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
