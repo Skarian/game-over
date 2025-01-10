@@ -2,14 +2,16 @@ import "./App.css";
 import React, { useEffect } from 'react';
 import {
   init,
+  setKeyMap,
+  useFocusable,
   FocusContext,
   navigateByDirection,
 } from '@noriginmedia/norigin-spatial-navigation';
 import { useGamepad } from "./useGamepad";
 import toast from 'react-hot-toast'
 import Focus from "./Focus";
-// import useSound from "use-sound";
-// import uiSound from "/sounds/deck_ui_navigation.mp3"
+import useSound from "use-sound";
+import uiSound from "/sounds/deck_ui_navigation.mp3"
 
 const notify = () => toast("Something has happened!");
 
@@ -28,6 +30,7 @@ const Button: React.FC<{ label: string; onClick: () => void, autoFocus: boolean 
 };
 
 const ButtonList: React.FC = () => {
+  const { ref, focusKey } = useFocusable();
   const buttons = [
     { label: 'Button 1', action: notify },
     { label: 'Button 2', action: notify },
@@ -45,16 +48,20 @@ const ButtonList: React.FC = () => {
 
 
   return (
-    <div className="flex space-x-2 flex-wrap ">
-      {buttons.map((button, index) => (
-        <Button key={index} label={button.label} onClick={button.action} autoFocus={index === 0} />
-      ))}
-    </div>
+    <FocusContext.Provider value={focusKey}>
+      <div ref={ref} className="">
+        <div className="flex space-x-2 flex-wrap ">
+          {buttons.map((button, index) => (
+            <Button key={index} label={button.label} onClick={button.action} autoFocus={index === 0} />
+          ))}
+        </div>
+      </div>
+    </FocusContext.Provider>
   );
 };
 
 const App: React.FC = () => {
-  // const [play] = useSound(uiSound);
+  const [play] = useSound(uiSound);
 
   const gamepadInfo = useGamepad();
 
@@ -63,38 +70,38 @@ const App: React.FC = () => {
       switch (gamepadInfo.joystick) {
         case "up":
           navigateByDirection("up", {});
-          // play()
+          play()
           break;
         case "down":
           navigateByDirection("down", {})
-          // play()
+          play()
           break;
         case "right":
           navigateByDirection("right", {})
-          // play()
+          play()
           break;
         case "left":
           navigateByDirection("left", {})
-          // play()
+          play()
           break;
         default:
           break;
       }
       if (gamepadInfo.up) {
         navigateByDirection("up", {})
-        // play()
+        play()
       }
       if (gamepadInfo.down) {
         navigateByDirection("down", {})
-        // play()
+        play()
       }
       if (gamepadInfo.left) {
         navigateByDirection("left", {})
-        // play()
+        play()
       }
       if (gamepadInfo.right) {
         navigateByDirection("right", {})
-        // play()
+        play()
       }
 
     }
@@ -106,9 +113,6 @@ const App: React.FC = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
         <h1 className="text-2xl font-bold mb-6">Gamepad Navigation Example</h1>
         <ButtonList />
-        <div className="h-20" />
-        <ButtonList />
-
       </div>
     </FocusContext.Provider>
   );
