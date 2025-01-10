@@ -9,6 +9,7 @@ import {
 import { useGamepad } from "./useGamepad";
 import toast from 'react-hot-toast'
 import Focus from "./Focus";
+import KeyCodeDisplay from "./KeyCodeDisplay";
 
 const notify = () => toast("Something was selected!");
 
@@ -56,9 +57,9 @@ const App: React.FC = () => {
 
   const gamepadInfo = useGamepad();
 
-  // setKeyMap({
-  //   enter: [13]
-  // })
+  setKeyMap({
+    enter: [13]
+  })
 
   useEffect(() => {
     if (gamepadInfo.connected) {
@@ -118,7 +119,7 @@ const App: React.FC = () => {
       <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
         <h1 className="text-2xl font-bold mb-6">Gamepad Navigation Example</h1>
         <ButtonList />
-        <div className="h-20" />
+        <KeyCodeDisplay />
         <ButtonList />
 
       </div>
