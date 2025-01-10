@@ -83,6 +83,19 @@ const ButtonList: React.FC = () => {
         default:
           break;
       }
+      if (gamepadInfo.up) {
+        navigateByDirection("up", {})
+      }
+      if (gamepadInfo.down) {
+        navigateByDirection("down", {})
+      }
+      if (gamepadInfo.left) {
+        navigateByDirection("left", {})
+      }
+      if (gamepadInfo.right) {
+        navigateByDirection("right", {})
+      }
+
     }
   }, [gamepadInfo])
 
