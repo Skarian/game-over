@@ -57,15 +57,12 @@ const App: React.FC = () => {
 
   const gamepadInfo = useGamepad();
 
-  setKeyMap({
-    enter: [13]
-  })
-
   useEffect(() => {
     if (gamepadInfo.connected) {
       switch (gamepadInfo.joystick) {
         case "up":
           navigateByDirection("up", {});
+          navigateByDirection("enter", {})
           break;
         case "down":
           navigateByDirection("down", {})
