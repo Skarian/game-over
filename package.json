@@ -13,9 +13,11 @@
     "@noriginmedia/norigin-spatial-navigation": "^2.2.2",
     "@tauri-apps/api": "^2",
     "@tauri-apps/plugin-opener": "^2",
+    "motion": "^11.17.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-hot-toast": "^2.5.1",
+    "react-merge-refs": "^2.1.1",
     "tauri-plugin-gamepad-api": "^0.0.5",
     "use-sound": "^4.0.3"
   },
@@ -25,7 +27,10 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "autoprefixer": "^10.4.20",
+    "daisyui": "^4.12.23",
     "postcss": "^8.4.49",
+    "prettier": "^3.4.2",
+    "prettier-plugin-tailwindcss": "^0.6.9",
     "tailwindcss": "^3.4.17",
     "typescript": "~5.6.2",
     "vite": "^6.0.3"

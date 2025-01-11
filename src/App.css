@@ -6,3 +6,7 @@ html,
 body {
   cursor: none;
 }
+
+.test {
+  @apply border-4 border-red-900;
+}

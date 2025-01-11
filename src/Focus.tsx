@@ -5,13 +5,17 @@ import enterSound from "/sounds/deck_ui_into_game_detail.mp3"
 import useSound from "use-sound";
 import { useGamepad } from "./useGamepad";
 
-const Focus: React.FC<{ action: () => void, autoFocus: boolean, children: React.ReactNode, focusedStyle: string, unFocusedStyle: string, className: string }> = ({ action, autoFocus, children, focusedStyle, unFocusedStyle, className }) => {
+const Focus: React.FC<{ action: () => void, autoFocus: boolean, children: React.ReactNode, focusedStyle: string, unFocusedStyle: string, className: string }> = ({ action, autoFocus, children, className }) => {
   const [playNavigation] = useSound(navigationSound);
   const [playEnter] = useSound(enterSound);
+  const handleSelect = () => {
+    playEnter()
+    action()
+  }
+
   const { ref, focusSelf, focused } = useFocusable({
     onEnterRelease: () => {
-      playEnter()
-      action()
+      handleSelect()
     },
     onFocus: () => {
       playNavigation()
@@ -23,10 +27,8 @@ const Focus: React.FC<{ action: () => void, autoFocus: boolean, children: React.
   useEffect(() => {
     if (gamepadInfo.connected && focused) {
       if (gamepadInfo.buttonA) {
-        playEnter()
-        action()
+        handleSelect()
       }
-
     }
   }, [gamepadInfo])
 
@@ -37,12 +39,12 @@ const Focus: React.FC<{ action: () => void, autoFocus: boolean, children: React.
   }, [autoFocus, focusSelf])
 
   return (
-    <div
+    <button
       ref={ref}
-      className={`${className} ${focused ? focusedStyle : unFocusedStyle}`}
+      className={className}
     >
       {children}
-    </div>
+    </button>
   );
 };
 

@@ -1,80 +1,74 @@
-import "./App.css";
-import React, { useEffect } from 'react';
+import "./App.css"
+import React, { useEffect } from "react"
 import {
   init,
   FocusContext,
   navigateByDirection,
-  setKeyMap,
-} from '@noriginmedia/norigin-spatial-navigation';
-import { useGamepad } from "./useGamepad";
-import toast from 'react-hot-toast'
-import Focus from "./Focus";
-import KeyCodeDisplay from "./KeyCodeDisplay";
+} from "@noriginmedia/norigin-spatial-navigation"
+import { useGamepad } from "./useGamepad"
+import toast from "react-hot-toast"
+import KeyCodeDisplay from "./KeyCodeDisplay"
+import Button from "./Button"
+import Controls from "./Controls"
+import AppList from "./AppList"
 
-const notify = () => toast("Something was selected!");
+const notify = () => toast("Something was selected!")
 
 // Initialize Spatial Navigation
 init({
   debug: false, // Enables console debugging
   visualDebug: false, // Enables visual focus debugging
-});
-
-const Button: React.FC<{ label: string; onClick: () => void, autoFocus: boolean }> = ({ label, onClick, autoFocus }) => {
-  return (
-    <Focus autoFocus={autoFocus} className="px-6 py-3 rounded" focusedStyle="ring-offset-2 ring-2 bg-blue-400 text-white" unFocusedStyle="bg-gray-400 text-black" action={onClick} >
-      {label}
-    </Focus>
-  );
-};
+  shouldFocusDOMNode: true,
+})
 
 const ButtonList: React.FC = () => {
   const buttons = [
-    { label: 'Button 1', action: notify },
-    { label: 'Button 2', action: notify },
-    { label: 'Button 3', action: notify },
-    { label: 'Button 4', action: notify },
-    { label: 'Button 5', action: notify },
-    { label: 'Button 6', action: notify },
-    { label: 'Button 7', action: notify },
-    { label: 'Button 8', action: notify },
-    { label: 'Button 9', action: notify },
-    { label: 'Button 10', action: notify },
-    { label: 'Button 11', action: notify },
-    { label: 'Button 12', action: notify },
-  ];
-
+    { label: "Button 1", action: notify },
+    { label: "Button 2", action: notify },
+    { label: "Button 3", action: notify },
+    { label: "Button 4", action: notify },
+    { label: "Button 5", action: notify },
+    { label: "Button 6", action: notify },
+    { label: "Button 7", action: notify },
+    { label: "Button 8", action: notify },
+    { label: "Button 9", action: notify },
+    { label: "Button 10", action: notify },
+    { label: "Button 11", action: notify },
+    { label: "Button 12", action: notify },
+  ]
 
   return (
-    <div className="flex space-x-2 flex-wrap ">
+    <div className="flex flex-wrap space-x-2">
       {buttons.map((button, index) => (
-        <Button key={index} label={button.label} onClick={button.action} autoFocus={index === 0} />
+        <Button key={index} action={button.action} autoFocus={index === 0}>
+          {button.label}
+        </Button>
       ))}
     </div>
-  );
-};
+  )
+}
 
 const App: React.FC = () => {
-
-  const gamepadInfo = useGamepad();
+  const gamepadInfo = useGamepad()
 
   useEffect(() => {
     if (gamepadInfo.connected) {
       switch (gamepadInfo.joystick) {
         case "up":
-          navigateByDirection("up", {});
+          navigateByDirection("up", {})
           navigateByDirection("enter", {})
-          break;
+          break
         case "down":
           navigateByDirection("down", {})
-          break;
+          break
         case "right":
           navigateByDirection("right", {})
-          break;
+          break
         case "left":
           navigateByDirection("left", {})
-          break;
+          break
         default:
-          break;
+          break
       }
       if (gamepadInfo.up) {
         navigateByDirection("up", {})
@@ -88,21 +82,27 @@ const App: React.FC = () => {
       if (gamepadInfo.right) {
         navigateByDirection("right", {})
       }
-
     }
   }, [gamepadInfo])
 
   return (
     <FocusContext.Provider value="MAIN">
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gray-100">
-        <h1 className="text-2xl font-bold mb-6">Gamepad Navigation Example</h1>
-        <ButtonList />
-        <KeyCodeDisplay />
-        <ButtonList />
-
+      <div className="flex h-screen flex-col bg-gray-100">
+        <div className="flex flex-grow-0 items-center justify-between rounded-b-2xl bg-gray-900 px-8 py-4">
+          <div className="text-5xl font-extrabold text-white">Task Manager</div>
+          <Button variant="error" action={() => {}}>
+            Exit
+          </Button>
+        </div>
+        <div className="flex flex-shrink flex-grow overflow-y-auto bg-white">
+          <AppList />
+        </div>
+        <div className="flex flex-grow-0 items-center justify-center space-x-20 rounded-t-2xl bg-gray-900 px-8 py-4">
+          <Controls />
+        </div>
       </div>
     </FocusContext.Provider>
-  );
-};
+  )
+}
 
-export default App;
+export default App
