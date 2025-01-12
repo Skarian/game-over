@@ -19,11 +19,11 @@ const notify = () => toast("Something was selected!")
 // Initialize Spatial Navigation
 init({
   debug: false, // Enables console debugging
-  visualDebug: false, // Enables visual focus debugging
+  visualDebug: true, // Enables visual focus debugging
   shouldFocusDOMNode: true,
-  domNodeFocusOptions: {
-    preventScroll: true,
-  },
+  // domNodeFocusOptions: {
+  //   preventScroll: true,
+  // },
 })
 
 export interface ProcessDetails {

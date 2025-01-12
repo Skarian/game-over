@@ -1,15 +1,8 @@
-import React, { useEffect, useRef, useState } from "react"
+import React, { useEffect, useState } from "react"
 import Button from "./Button"
-import { invoke } from "@tauri-apps/api/core"
 import { ProcessDetails } from "./App"
 import { useGamepad } from "./useGamepad"
 import { DownArrowIcon, UpArrowIcon } from "./icons/Icons"
-import useSound from "use-sound"
-import enterSound from "/sounds/deck_ui_into_game_detail.mp3"
-import {
-  FocusContext,
-  useFocusable,
-} from "@noriginmedia/norigin-spatial-navigation"
 
 interface AppTable {
   processes: ProcessDetails[]
@@ -21,9 +14,6 @@ const AppTable: React.FC<AppTable> = ({ processes }) => {
   const [processList, setProcessList] = useState(
     processes.sort((a, b) => parseInt(a.pid, 10) - parseInt(b.pid, 10))
   )
-
-  // Sorting Logic
-  const [playSortSound] = useSound(enterSound)
 
   const [sort, setSort] = useState<AppListSort>("default")
 
