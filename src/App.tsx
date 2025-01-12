@@ -21,9 +21,9 @@ init({
   debug: false, // Enables console debugging
   visualDebug: true, // Enables visual focus debugging
   shouldFocusDOMNode: true,
-  // domNodeFocusOptions: {
-  //   preventScroll: true,
-  // },
+  domNodeFocusOptions: {
+    preventScroll: true,
+  },
 })
 
 export interface ProcessDetails {
