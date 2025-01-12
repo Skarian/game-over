@@ -78,8 +78,6 @@ const AppTable: React.FC<AppTable> = ({ processes }) => {
   }, [gamepadInfo, sort, setSort, getNextSort])
 
   // Scroll Logic
-  const { ref, focusKey } = useFocusable()
-  const tableRef = useRef<HTMLDivElement>(null)
 
   // Ensure focused Button is visible
   // useEffect(() => {
@@ -119,10 +117,7 @@ const AppTable: React.FC<AppTable> = ({ processes }) => {
   // }, [])
 
   return (
-    <div
-      ref={tableRef}
-      className="test flex max-h-[calc(90vh-9rem)] flex-grow justify-center overflow-y-auto"
-    >
+    <div className="test flex max-h-[calc(90vh-9rem)] flex-grow justify-center overflow-y-auto">
       <table className="w-2/3 table-auto border-collapse bg-white text-3xl">
         <thead className="sticky top-0 bg-gray-200">
           <tr>
