@@ -41,15 +41,13 @@ fn get_process_details(
     );
     let mut process_list: Vec<ProcessDetails> = Vec::new();
     for process in sys.processes().values() {
-        if process.cpu_usage() / (sys.cpus().len() as f32) > 0.01 {
-            let process_details = ProcessDetails {
-                pid: process.pid().to_string(),
-                name: process.name().to_str().unwrap().to_string(),
-                memory: process.memory() / (1024 * 1024),
-                cpu: process.cpu_usage() / (sys.cpus().len() as f32),
-            };
-            process_list.push(process_details)
-        }
+        let process_details = ProcessDetails {
+            pid: process.pid().to_string(),
+            name: process.name().to_str().unwrap().to_string(),
+            memory: process.memory() / (1024 * 1024),
+            cpu: process.cpu_usage() / (sys.cpus().len() as f32),
+        };
+        process_list.push(process_details)
     }
 
     Ok(process_list)
