@@ -1,5 +1,3 @@
-import React from "react"
-
 const Controls = () => {
   return (
     <>
@@ -10,6 +8,10 @@ const Controls = () => {
       <div className="space-x-2 text-3xl text-white">
         <kbd className="kbd kbd-sm mr-4 bg-white text-2xl text-black">X</kbd>
         Save Game
+      </div>
+      <div className="space-x-2 text-3xl text-white">
+        <kbd className="kbd kbd-sm mr-4 bg-white text-2xl text-black">Y</kbd>
+        Toggle Sort
       </div>
       <div className="space-x-2 text-3xl text-white">
         <kbd className="kbd kbd-sm mr-4 bg-white text-2xl text-black">

@@ -6,6 +6,8 @@ import useSound from "use-sound"
 import { useGamepad } from "./useGamepad"
 import { useAnimate, usePresence } from "motion/react"
 import { mergeRefs } from "react-merge-refs"
+import { useInView } from "react-intersection-observer"
+import { scroller, animateScroll, Element } from "react-scroll"
 
 type ButtonVariant = "default" | "error"
 
@@ -76,6 +78,21 @@ const Button: React.FC<ButtonProps> = ({
     }
   }, [isPresent])
 
+  // Scrolling Behavior
+  const { ref: viewRef, inView } = useInView({ threshold: 0 })
+  // useEffect(() => {
+  //   if (focused && !inView) {
+  //     console.log("AM SCROLLING")
+  //     // scroller.scrollTo("myScrollTarget", {
+  //     //   containerId: "scrollable-container",
+  //     //   duration: 500,
+  //     //   smooth: true,
+  //     //   // offset: -100,
+  //     // })
+  //     ref.current.scrollIntoView({ behavior: "smooth", block: "nearest" })
+  //   }
+  // }, [focused, inView])
+
   // Button Select Event Animation
   const selectAnimation = async () => {
     await animate(scope.current, { scale: 1.1 }, { duration: 0.05 })
@@ -85,21 +102,23 @@ const Button: React.FC<ButtonProps> = ({
 
   const buttonBaseClass = {
     default: "btn-neutral",
-    error: "btn-error",
+    error: "btn-error bg-red-300 text-black",
   }[variant || "default"]
 
   const buttonFocusClass = {
     default: "focus:btn-primary",
-    error: "btn-error",
+    error: "focus:bg-red-700 focus:text-white",
   }[variant || "default"]
 
   return (
-    <button
-      ref={mergeRefs([ref, scope])}
-      className={`btn btn-lg text-2xl opacity-0 ${buttonBaseClass} ${buttonFocusClass}`}
-    >
-      {children}
-    </button>
+    <Element name="myScrollTarget">
+      <button
+        ref={mergeRefs([ref, scope, viewRef])}
+        className={`btn btn-lg text-2xl opacity-0 ${buttonBaseClass} ${buttonFocusClass}`}
+      >
+        {children}
+      </button>
+    </Element>
   )
 }
 

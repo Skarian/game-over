@@ -1,5 +1,5 @@
 import "./App.css"
-import React, { useEffect } from "react"
+import React, { useEffect, useState } from "react"
 import {
   init,
   FocusContext,
@@ -11,6 +11,8 @@ import KeyCodeDisplay from "./KeyCodeDisplay"
 import Button from "./Button"
 import Controls from "./Controls"
 import AppList from "./AppList"
+import { invoke } from "@tauri-apps/api/core"
+import AppTable from "./AppTable"
 
 const notify = () => toast("Something was selected!")
 
@@ -19,35 +21,17 @@ init({
   debug: false, // Enables console debugging
   visualDebug: false, // Enables visual focus debugging
   shouldFocusDOMNode: true,
+  domNodeFocusOptions: {
+    preventScroll: true,
+  },
 })
 
-const ButtonList: React.FC = () => {
-  const buttons = [
-    { label: "Button 1", action: notify },
-    { label: "Button 2", action: notify },
-    { label: "Button 3", action: notify },
-    { label: "Button 4", action: notify },
-    { label: "Button 5", action: notify },
-    { label: "Button 6", action: notify },
-    { label: "Button 7", action: notify },
-    { label: "Button 8", action: notify },
-    { label: "Button 9", action: notify },
-    { label: "Button 10", action: notify },
-    { label: "Button 11", action: notify },
-    { label: "Button 12", action: notify },
-  ]
-
-  return (
-    <div className="flex flex-wrap space-x-2">
-      {buttons.map((button, index) => (
-        <Button key={index} action={button.action} autoFocus={index === 0}>
-          {button.label}
-        </Button>
-      ))}
-    </div>
-  )
+export interface ProcessDetails {
+  pid: string
+  name: string
+  memory: number // u64 in Rust maps to number in TypeScript
+  cpu: number // f32 in Rust maps to number in TypeScript
 }
-
 const App: React.FC = () => {
   const gamepadInfo = useGamepad()
 
@@ -85,17 +69,43 @@ const App: React.FC = () => {
     }
   }, [gamepadInfo])
 
+  const [processes, setProcesses] = useState<ProcessDetails[]>([])
+
+  useEffect(() => {
+    const fetchProcesses = async () => {
+      try {
+        const result: ProcessDetails[] = await invoke("get_process_details")
+        console.log(result)
+        setProcesses(result)
+      } catch (error) {
+        console.error("Error fetching process details:", error)
+      }
+    }
+    fetchProcesses()
+  }, [])
+
+  const handleQuit = () => {
+    console.log("quitting application")
+    invoke("quit")
+  }
+
   return (
     <FocusContext.Provider value="MAIN">
       <div className="flex h-screen flex-col bg-gray-100">
         <div className="flex flex-grow-0 items-center justify-between rounded-b-2xl bg-gray-900 px-8 py-4">
           <div className="text-5xl font-extrabold text-white">Task Manager</div>
-          <Button variant="error" action={() => {}}>
+          <Button variant="error" action={handleQuit}>
             Exit
           </Button>
         </div>
-        <div className="flex flex-shrink flex-grow overflow-y-auto bg-white">
-          <AppList />
+        <div className="flex flex-shrink flex-grow bg-white p-8">
+          {processes.length > 0 ? (
+            <AppTable processes={processes} />
+          ) : (
+            <div>
+              <div>Loading...</div>
+            </div>
+          )}
         </div>
         <div className="flex flex-grow-0 items-center justify-center space-x-20 rounded-t-2xl bg-gray-900 px-8 py-4">
           <Controls />
