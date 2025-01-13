@@ -3,6 +3,7 @@ import Button from "./Button"
 import { ProcessDetails } from "./App"
 import { useGamepad } from "./useGamepad"
 import { DownArrowIcon, UpArrowIcon } from "./icons/Icons"
+import { debounce } from "lodash"
 
 interface AppTable {
   processes: ProcessDetails[]
@@ -65,7 +66,7 @@ const AppTable: React.FC<AppTable> = ({ processes }) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [gamepadInfo, sort, setSort, getNextSort])
+  }, [gamepadInfo, handleSort])
 
   // Scroll Logic
   const tableRef = useRef<HTMLDivElement>(null)
