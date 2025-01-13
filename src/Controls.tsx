@@ -3,7 +3,7 @@ const Controls = () => {
     <>
       <div className="space-x-2 text-3xl text-white">
         <kbd className="kbd kbd-sm mr-4 bg-white text-2xl text-black">A</kbd>
-        Interact
+        Confirm
       </div>
       <div className="space-x-2 text-3xl text-white">
         <kbd className="kbd kbd-sm mr-4 bg-white text-2xl text-black">X</kbd>

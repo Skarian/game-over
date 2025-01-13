@@ -98,7 +98,7 @@ const App: React.FC = () => {
             Exit
           </Button>
         </div>
-        <div className="flex flex-shrink flex-grow bg-white p-8">
+        <div className="flex flex-shrink flex-grow items-center justify-center bg-white p-8">
           {processes.length > 0 ? (
             <AppTable processes={processes} />
           ) : (

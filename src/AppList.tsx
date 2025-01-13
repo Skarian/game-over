@@ -94,10 +94,10 @@ const AppList: React.FC<AppList> = ({ processes }) => {
   return (
     <div
       id="scrollable-container"
-      className="flex h-full w-full justify-center"
+      className="test flex h-full w-full justify-center"
     >
       <div className="p-8">
-        <table className="table border-collapse text-3xl text-black">
+        <table className="test table border-collapse text-3xl text-black">
           {/* head */}
           <thead className="text-3xl text-black">
             <tr>

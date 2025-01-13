@@ -110,9 +110,9 @@ const AppTable: React.FC<AppTable> = ({ processes }) => {
   return (
     <div
       ref={tableRef}
-      className="test flex max-h-[calc(90vh-9rem)] flex-grow justify-center overflow-y-auto"
+      className="flex max-h-[calc(85vh-9rem)] flex-grow justify-center overflow-y-auto"
     >
-      <table className="w-2/3 table-auto border-collapse bg-white text-3xl">
+      <table className="w-full table-auto border-collapse bg-white text-3xl">
         <thead className="sticky top-0 bg-gray-200">
           <tr>
             <th className="border-b px-2 py-2 text-left font-medium text-gray-700">
@@ -143,7 +143,7 @@ const AppTable: React.FC<AppTable> = ({ processes }) => {
         </thead>
         <tbody>
           {processList.map((process, index) => (
-            <tr key={process.pid} className="hover:bg-gray-100">
+            <tr key={process.pid} className="focus:bg-gray-100">
               <td className="border-b px-4 py-2 text-gray-600">
                 {process.pid}
               </td>
