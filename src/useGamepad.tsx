@@ -85,28 +85,6 @@ export const useGamepad = () => {
       if (JSON.stringify(newGamepadInfo) !== JSON.stringify(gamepadInfo)) {
         setGamepadInfo(newGamepadInfo)
       }
-    } else {
-      if (gamepadInfo.connected) {
-        setGamepadInfo({
-          connected: false,
-          buttonA: false,
-          buttonB: false,
-          buttonX: false,
-          buttonY: false,
-          joystick: "neutral",
-          joystickRight: "neutral",
-          RB: false,
-          LB: false,
-          RT: false,
-          LT: false,
-          start: false,
-          select: false,
-          up: false,
-          down: false,
-          left: false,
-          right: false,
-        })
-      }
     }
   }
 
