@@ -6,15 +6,13 @@ import {
   navigateByDirection,
 } from "@noriginmedia/norigin-spatial-navigation"
 import { useGamepad } from "./useGamepad"
-import toast from "react-hot-toast"
-import KeyCodeDisplay from "./KeyCodeDisplay"
+// import toast from "react-hot-toast"
 import Button from "./Button"
 import Controls from "./Controls"
-import AppList from "./AppList"
 import { invoke } from "@tauri-apps/api/core"
 import AppTable from "./AppTable"
 
-const notify = () => toast("Something was selected!")
+// const notify = () => toast("Something was selected!")
 
 // Initialize Spatial Navigation
 init({

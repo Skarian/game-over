@@ -14,21 +14,6 @@ interface AppList {
 type AppListSort = "default" | "alphabetical" | "cpu" | "ram"
 
 const AppList: React.FC<AppList> = ({ processes }) => {
-  const entries = [
-    { id: 0, name: "input-leap.exe", cpu: "11%", ram: "15%", type: "Other" },
-    { id: 0, name: "input-leap.exe", cpu: "11%", ram: "15%", type: "Other" },
-    { id: 0, name: "input-leap.exe", cpu: "11%", ram: "15%", type: "Other" },
-    { id: 0, name: "input-leap.exe", cpu: "11%", ram: "15%", type: "Other" },
-    { id: 0, name: "input-leap.exe", cpu: "11%", ram: "15%", type: "Other" },
-    { id: 0, name: "input-leap.exe", cpu: "11%", ram: "15%", type: "Other" },
-    { id: 0, name: "input-leap.exe", cpu: "11%", ram: "15%", type: "Other" },
-    { id: 0, name: "input-leap.exe", cpu: "11%", ram: "15%", type: "Other" },
-    { id: 0, name: "input-leap.exe", cpu: "11%", ram: "15%", type: "Other" },
-    { id: 0, name: "input-leap.exe", cpu: "11%", ram: "15%", type: "Other" },
-    { id: 0, name: "input-leap.exe", cpu: "11%", ram: "15%", type: "Other" },
-    { id: 0, name: "input-leap.exe", cpu: "11%", ram: "15%", type: "Other" },
-  ]
-
   const [processList, setProcessList] = useState(
     processes.sort((a, b) => parseInt(a.pid, 10) - parseInt(b.pid, 10))
   )

@@ -3,7 +3,6 @@ import Button from "./Button"
 import { ProcessDetails } from "./App"
 import { useGamepad } from "./useGamepad"
 import { DownArrowIcon, UpArrowIcon } from "./icons/Icons"
-import { debounce } from "lodash"
 
 interface AppTable {
   processes: ProcessDetails[]

@@ -7,7 +7,7 @@ import { useGamepad } from "./useGamepad"
 import { useAnimate, usePresence } from "motion/react"
 import { mergeRefs } from "react-merge-refs"
 import { useInView } from "react-intersection-observer"
-import { scroller, animateScroll, Element } from "react-scroll"
+import { Element } from "react-scroll"
 
 type ButtonVariant = "default" | "error"
 
@@ -79,7 +79,7 @@ const Button: React.FC<ButtonProps> = ({
   }, [isPresent])
 
   // Scrolling Behavior
-  const { ref: viewRef, inView } = useInView({ threshold: 0 })
+  const { ref: viewRef } = useInView({ threshold: 0 })
   // useEffect(() => {
   //   if (focused && !inView) {
   //     console.log("AM SCROLLING")
