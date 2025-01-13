@@ -120,7 +120,7 @@ export const useGamepad = () => {
     window.addEventListener("gamepadconnected", gamepadConnected)
     window.addEventListener("gamepaddisconnected", gamepadDisconnected)
 
-    const interval = setInterval(updateGamepadState, 100)
+    const interval = setInterval(updateGamepadState, 10)
 
     return () => {
       window.removeEventListener("gamepadconnected", gamepadConnected)
