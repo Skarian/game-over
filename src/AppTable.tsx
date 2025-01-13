@@ -48,12 +48,16 @@ const AppTable: React.FC<AppTable> = ({ processes }) => {
   // Gamepad Logic
   const gamepadInfo = useGamepad()
 
+  const prevButtonYRef = useRef(false)
+
   useEffect(() => {
     if (gamepadInfo.connected) {
-      if (gamepadInfo.buttonY) {
+      if (!prevButtonYRef.current && gamepadInfo.buttonY) {
         handleSort()
       }
     }
+
+    prevButtonYRef.current = gamepadInfo.buttonY
 
     const handleKeyDown = (event: KeyboardEvent) => {
       if (event.key === "y" || event.key === "Y") {
@@ -66,7 +70,7 @@ const AppTable: React.FC<AppTable> = ({ processes }) => {
     return () => {
       window.removeEventListener("keydown", handleKeyDown)
     }
-  }, [gamepadInfo, handleSort])
+  }, [gamepadInfo])
 
   // Scroll Logic
   const tableRef = useRef<HTMLDivElement>(null)
