@@ -1,75 +1,29 @@
 import React, { useEffect, useRef, useState } from "react"
 import Button from "./Button"
 import { ProcessDetails } from "./App"
-import { useGamepad } from "./useGamepad"
 import { DownArrowIcon, UpArrowIcon } from "./icons/Icons"
+
+// Sortig Logic
+export type AppTableSort = "alphabetical" | "cpu" | "ram"
 
 interface AppTable {
   processes: ProcessDetails[]
+  sort: AppTableSort
 }
 
-type AppListSort = "default" | "alphabetical" | "cpu" | "ram"
-
-const AppTable: React.FC<AppTable> = ({ processes }) => {
-  const [processList, setProcessList] = useState(
-    processes.sort((a, b) => parseInt(a.pid, 10) - parseInt(b.pid, 10))
-  )
-
-  const [sort, setSort] = useState<AppListSort>("default")
-
-  const appListSorts: AppListSort[] = ["default", "alphabetical", "cpu", "ram"]
-
-  function getNextSort(current: AppListSort): AppListSort {
-    const currentIndex = appListSorts.indexOf(current)
-    const nextIndex = (currentIndex + 1) % appListSorts.length // Loop back to 0 after the last item
-    return appListSorts[nextIndex]
-  }
-
-  const handleSort = () => {
-    const newSort = getNextSort(sort)
-    setSort(newSort)
-    const sortedProcesses = (() => {
-      switch (newSort) {
-        case "alphabetical":
-          return [...processes].sort((a, b) => a.name.localeCompare(b.name))
-        case "cpu":
-          return [...processes].sort((a, b) => b.cpu - a.cpu)
-        case "ram":
-          return [...processes].sort((a, b) => b.memory - a.memory)
-        default:
-          return processes
-      }
-    })()
-    setProcessList(sortedProcesses)
-    // playSortSound()
-  }
-
-  // Gamepad Logic
-  const gamepadInfo = useGamepad()
-
-  const prevButtonYRef = useRef(false)
-
-  useEffect(() => {
-    if (gamepadInfo.connected) {
-      if (!prevButtonYRef.current && gamepadInfo.buttonY) {
-        handleSort()
-      }
+const AppTable: React.FC<AppTable> = ({ processes, sort }) => {
+  const processList = React.useMemo(() => {
+    switch (sort) {
+      case "alphabetical":
+        return [...processes].sort((a, b) => a.name.localeCompare(b.name))
+      case "cpu":
+        return [...processes].sort((a, b) => b.cpu - a.cpu)
+      case "ram":
+        return [...processes].sort((a, b) => b.memory - a.memory)
+      default:
+        return processes
     }
-
-    prevButtonYRef.current = gamepadInfo.buttonY
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === "y" || event.key === "Y") {
-        handleSort()
-      }
-    }
-
-    window.addEventListener("keydown", handleKeyDown)
-
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown)
-    }
-  }, [gamepadInfo])
+  }, [processes, sort])
 
   // Scroll Logic
   const tableRef = useRef<HTMLDivElement>(null)
@@ -163,7 +117,7 @@ const AppTable: React.FC<AppTable> = ({ processes }) => {
               <td className="border-b px-4 py-2 text-gray-600">
                 <Button
                   variant="error"
-                  action={() => {}}
+                  action={() => { }}
                   autoFocus={index === 0}
                 >
                   X

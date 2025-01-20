@@ -1,5 +1,5 @@
 import "./App.css"
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import {
   init,
   FocusContext,
@@ -10,7 +10,8 @@ import { useGamepad } from "./useGamepad"
 import Button from "./Button"
 import Controls from "./Controls"
 import { invoke } from "@tauri-apps/api/core"
-import AppTable from "./AppTable"
+import { listen, UnlistenFn } from "@tauri-apps/api/event"
+import AppTable, { AppTableSort } from "./AppTable"
 
 // const notify = () => toast("Something was selected!")
 
@@ -31,14 +32,16 @@ export interface ProcessDetails {
   cpu: number // f32 in Rust maps to number in TypeScript
 }
 const App: React.FC = () => {
+  // Gamepad Logic
   const gamepadInfo = useGamepad()
+  const prevButtonYRef = useRef(false)
 
   useEffect(() => {
     if (gamepadInfo.connected) {
       switch (gamepadInfo.joystick) {
         case "up":
           navigateByDirection("up", {})
-          navigateByDirection("enter", {})
+          // navigateByDirection("enter", {})
           break
         case "down":
           navigateByDirection("down", {})
@@ -64,27 +67,79 @@ const App: React.FC = () => {
       if (gamepadInfo.right) {
         navigateByDirection("right", {})
       }
+      if (!prevButtonYRef.current && gamepadInfo.buttonY) {
+        handleSort(sort)
+      }
+      prevButtonYRef.current = gamepadInfo.buttonY
     }
   }, [gamepadInfo])
 
-  const [processes, setProcesses] = useState<ProcessDetails[]>([])
+  // Keyboard Logic
+  const [sort, setSort] = useState<AppTableSort>("alphabetical")
 
   useEffect(() => {
-    const fetchProcesses = async () => {
-      try {
-        const result: ProcessDetails[] = await invoke("get_process_details")
-        console.log(result)
-        setProcesses(result)
-      } catch (error) {
-        console.error("Error fetching process details:", error)
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "y" || event.key === "Y") {
+        handleSort(sort)
       }
     }
-    fetchProcesses()
+
+    window.addEventListener("keydown", handleKeyDown)
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown)
+    }
+  }, [sort])
+
+  const [processes, setProcesses] = useState<ProcessDetails[]>([])
+  //
+  useEffect(() => {
+    let unlisten: UnlistenFn | null = null
+
+    const setupListener = async () => {
+      const listener = await listen<ProcessDetails[]>(
+        "system-update",
+        (event) => {
+          console.log("Received system-update event")
+          setProcesses(event.payload)
+        }
+      )
+      unlisten = listener
+    }
+
+    setupListener()
+
+    return () => {
+      if (unlisten) {
+        unlisten()
+      }
+    }
   }, [])
+
+  // useEffect(() => {
+  //   console.log(processes)
+  // }, [processes])
 
   const handleQuit = () => {
     console.log("quitting application")
     invoke("quit")
+  }
+
+  function getNextSort(current: AppTableSort): AppTableSort {
+    switch (current) {
+      case "alphabetical":
+        return "cpu"
+      case "cpu":
+        return "ram"
+      case "ram":
+        return "alphabetical"
+    }
+  }
+
+  const handleSort = (currentSort: AppTableSort) => {
+    let nextSort = getNextSort(currentSort)
+    console.log(`Changing sort. Current: ${sort}; New: ${nextSort}`)
+    setSort(nextSort)
   }
 
   return (
@@ -98,7 +153,7 @@ const App: React.FC = () => {
         </div>
         <div className="flex flex-shrink flex-grow items-center justify-center bg-white p-8">
           {processes.length > 0 ? (
-            <AppTable processes={processes} />
+            <AppTable sort={sort} processes={processes} />
           ) : (
             <div>
               <div>Loading...</div>
